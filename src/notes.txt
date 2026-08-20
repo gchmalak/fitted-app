@@ -1,0 +1,75 @@
+*now i would like to start working on the product page but keep in mind only the admin can add products and modify them.
+ i would like last added products to be displayed as an embla carousel then to browse 
+ all the products a button takes the user to all the products which should be cards
+  that have all info of the product and an order now*
+
+
+
+  *i would like to add decorations to the login and register pages.
+  or a background picture that has shopping bags or smothing in it*
+
+
+
+
+________________________________________________________________________________________________________________________________________________________________________
+  A layout I'd recommend for FITD
+
+Combine COS's simplicity with Everlane's storytelling.
+
+──────────────────────────
+
+Large Hero Image
+
+ABOUT FITD
+
+Modern fashion.
+Timeless style.
+
+──────────────────────────
+
+Our Story
+(Image left | Text right)
+
+──────────────────────────
+
+Our Philosophy
+
+Quality
+Craftsmanship
+Timeless Design
+
+──────────────────────────
+
+Large Editorial Image
+
+──────────────────────────
+
+Why FITD?
+
+• Carefully Curated
+• Premium Fabrics
+• Designed to Last
+
+──────────────────────────
+
+Featured Collection
+
+──────────────────────────
+
+Newsletter
+
+──────────────────────────
+
+Keep each text section to 2–4 sentences. Modern fashion brands rely on imagery, spacing, and typography more than long blocks of copy. This approach will fit naturally with the warm minimal palette you've chosen and the Zara-inspired hero section you're already building.
+
+
+*zod to validate les champs*
+
+  *i need to tell claude do give me une charte graphique all the colors i need in md format *
+
+
+  *i still have to work on the products page
+  * footer as a contact page so the contact in the navbar needs to point to it 
+  *an order page   
+  
+  *

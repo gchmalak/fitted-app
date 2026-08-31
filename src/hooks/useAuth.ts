@@ -1,19 +1,22 @@
-import { getCurrentUser } from "@/services/auth.service"
-import { useQuery } from "@tanstack/react-query"
+import { getCurrentUser } from "@/services/auth.service";
+import { useQuery } from "@tanstack/react-query";
 
-export function useAuth(){
-    const hasToken = typeof window !== "undefined" && !!localStorage.getItem("token")
+export function useAuth() {
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
-    const {data, isLoading} = useQuery({
-        queryKey:["me"],
-        queryFn:getCurrentUser,
-        enabled:hasToken,
-        retry:false,
+  const { data, isLoading } = useQuery({
+    queryKey: ["me", token],
+    queryFn: getCurrentUser,
+    enabled: !!token,
+    retry: false,
+  });
 
-    })
-    return{
-        user:data?.data,
-        isAdmin:data?.data?.role==="admin",
-        isLoading:hasToken? isLoading : false,
-    }
+  const role = data?.data?.role;
+
+  return {
+    user: data?.data,
+    isOwner: role === "owner",
+    isAdmin: role === "admin" || role === "owner",
+    isLoading: !!token && isLoading,
+  };
 }

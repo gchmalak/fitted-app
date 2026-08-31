@@ -70,10 +70,11 @@ export default function Hero() {
     return (
       <section
         id="home"
+        data-navtheme="light"
         className="h-svh w-full bg-cream animate-pulse flex items-center justify-center"
       >
         <span className="text-xs uppercase tracking-[0.25em] text-slate-400">
-          Loading FITD...
+          Loading FITTED...
         </span>
       </section>
     );

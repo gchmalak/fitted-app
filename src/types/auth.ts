@@ -9,5 +9,5 @@ username:string;
 email:string;
 password:string;
 role?:UserRole;
-adminCode?:string;
+avatarUrl: string;
 }

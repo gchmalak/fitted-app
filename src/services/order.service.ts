@@ -1,9 +1,30 @@
 import { api } from "@/lib/axios";
-import { ApiResponse } from "@/types/api";
-import { Order, OrderStatus } from "@/types/order";
+import { ApiResponse, PaginatedResponse } from "@/types/api";
+import { CreateOrderRequest, Order, OrderStatus } from "@/types/order";
 
-export async function getAllOrders(): Promise<ApiResponse<Order[]>> {
-  const response = await api.get<ApiResponse<Order[]>>("/api/orders/all");
+export async function createOrder(data: CreateOrderRequest): Promise<ApiResponse<Order>> {
+  const response = await api.post<ApiResponse<Order>>("/api/orders", data);
+  return response.data;
+}
+
+export async function getMyOrders(): Promise<ApiResponse<Order[]>> {
+  const response = await api.get<ApiResponse<Order[]>>("/api/orders");
+  return response.data;
+}
+
+
+
+export async function getAllOrders(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  productName?: string;
+}): Promise<PaginatedResponse<Order[]>> {
+  const response = await api.get<PaginatedResponse<Order[]>>(
+    "/api/orders/all",
+    { params },
+  );
+
   return response.data;
 }
 

@@ -21,3 +21,17 @@ export async function reactivateUser(id: string): Promise<ApiResponse<User>> {
   const response = await api.put<ApiResponse<User>>(`/api/users/${id}/reactivate`);
   return response.data;
 }
+export async function updateProfilePicture(
+  file: File,
+): Promise<ApiResponse<User>> {
+  const formData = new FormData();
+
+  formData.append("avatar", file);
+
+  const response = await api.put<ApiResponse<User>>(
+    "/api/users/profile-picture",
+    formData,
+  );
+
+  return response.data;
+}

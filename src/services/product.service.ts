@@ -5,8 +5,19 @@ export interface FiltersResponse {
   departments: ProductDepartment[];
 }
 
-export async function getProducts(params?: ProductQueryParams): Promise<PaginatedResponse<Product[]>> {
-  const response = await api.get<PaginatedResponse<Product[]>>("/api/products", { params });
+export async function getProducts(
+  params?: ProductQueryParams,
+): Promise<PaginatedResponse<Product[]>> {
+  const queryParams = {
+    ...params,
+    departments: params?.departments?.join(","),
+  };
+
+  const response = await api.get<PaginatedResponse<Product[]>>(
+    "/api/products",
+    { params: queryParams },
+  );
+
   return response.data;
 }
 
@@ -34,5 +45,21 @@ export async function deleteProduct(id: string): Promise<void> {
 }
 export async function getFilters(): Promise<ApiResponse<FiltersResponse>> {
   const response = await api.get<ApiResponse<FiltersResponse>>("/api/products/filters");
+  return response.data;
+}
+
+// so that it fetches one department from backend then fetches it client size like care essentials:makeup+skincare
+export async function getProductsByDepartments(
+  departments: ProductDepartment[],
+  limit: number,
+): Promise<Product[]> {
+  const response = await getProducts({
+    departments,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+    limit,
+    page: 1,
+  });
+
   return response.data;
 }

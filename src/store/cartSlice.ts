@@ -40,10 +40,15 @@ reducers:{
     // we set back the array items to an empty array 
     clearCart:(state)=>{
         state.items =[]
-    }
+    },
+    
+setCart: (state, action: PayloadAction<CartItem[]>) => {
+  state.items = action.payload;
+},
+
 
 
 }
 })
-export const {addToCart, removeFromCart, updateQuantity, clearCart} =cartSlice.actions
+export const {addToCart, removeFromCart, updateQuantity, clearCart,setCart} =cartSlice.actions
 export default cartSlice.reducer;

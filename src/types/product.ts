@@ -1,7 +1,7 @@
 import { Category } from "./category";
 
 export type ProductDepartment =
-  | "Clothing" | "Shoes" | "Makeup" | "Skincare" | "Jewelry"|"Bags" | "Perfume";
+  | "Clothing" | "Accessories" | "Makeup" | "Skincare" | "Perfume";
 
 
 
@@ -14,13 +14,13 @@ export interface Variant {
   sku: string;
 }
 
-export interface Review {
-  _id: string;
-  authorId: string;
-  rating: 1 | 2 | 3 | 4 | 5;
-  comment: string;
-  createdAt: string;
-}
+// export interface Review {
+//   _id: string;
+//   authorId: string;
+//   rating: 1 | 2 | 3 | 4 | 5;
+//   comment: string;
+//   createdAt: string;
+// }
 
 export interface Product {
   _id: string;
@@ -34,10 +34,12 @@ export interface Product {
   subcategory:string;
   price: number;
   variants: Variant[];
-  reviews: Review[];
+  // reviews: Review[];
   averageRating: number;
   reviewCount: number;
   authorId: string;
+  care?: string;
+  shipping?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -53,6 +55,9 @@ export interface CreateProductRequest {
   subcategory?:string;
   price: number;
   variants: Omit<Variant, "_id">[];
+  care?:string;
+  shipping?:string;
+ 
 }
 
 export type UpdateProductRequest = Partial<CreateProductRequest>;
@@ -61,8 +66,9 @@ export interface ProductQueryParams {
   page?: number;
   limit?: number;
   sortBy?: "createdAt" | "price" | "averageRating";
-  sortOrder?: "asc" |"desc";
+  sortOrder?: "asc" | "desc";
   search?: string;
   department?: string;
+  departments?: string[];
   categoryId?: string;
 }

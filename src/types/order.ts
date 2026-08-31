@@ -1,8 +1,14 @@
 export type OrderStatus = "pending" | "shipped" | "delivered" | "cancelled";
 
+export interface OrderItemProduct {
+  _id: string;
+  name: string;
+  images: string[];
+}
+
 export interface OrderItem {
   _id: string;
-  product: string; // populated only if you .populate("items.product") —so this stays a plain ID
+  product: OrderItemProduct; // now populated
   variantId: string;
   quantity: number;
   priceAtPurchase: number;
@@ -16,11 +22,35 @@ export interface OrderUser {
 
 export interface Order {
   _id: string;
-  userId: string | OrderUser; // string for getMyOrders/getOrder, populated object for getAllOrders (admin)
+  orderId:string
+  userId: string | OrderUser;
   items: OrderItem[];
   totalPrice: number;
   status: OrderStatus;
-  address: string;
+  fullName: string;
+  phone: string;
+  street: string;
+  city: string;
+  wilaya: string;
+  postalCode?: string;
+  deliveryNotes?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CreateOrderItem{
+  productId:string;
+  variantId:string;
+  quantity:number
+}
+
+export interface CreateOrderRequest {
+  fullName: string;
+  phone: string;
+  street: string;
+  city: string;
+  wilaya: string;
+  postalCode?: string;
+  deliveryNotes?: string;
+  items: CreateOrderItem[];
 }

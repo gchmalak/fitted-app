@@ -10,7 +10,7 @@ export default function RequireAdmin({
   children: React.ReactNode;
 }) {
   const [hasMounted, setHasMounted] = useState(false);
-  const { isAdmin, isLoading } = useAuth();
+  const { user, isAdmin, isOwner, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -18,14 +18,19 @@ export default function RequireAdmin({
   }, []);
 
   useEffect(() => {
-    if (hasMounted && !isLoading && !isAdmin) {
+    if (hasMounted && !isLoading && (!user || (!isAdmin && !isOwner))) {
       router.push("/login");
     }
-  }, [hasMounted, isLoading, isAdmin, router]);
+  }, [hasMounted, user, isAdmin, isOwner, isLoading, router]);
 
-  if (!hasMounted || isLoading)
+  // Don't render role-dependent UI until mounted on client
+  if (!hasMounted || isLoading) {
     return <p className="p-16 text-center text-black">Checking access...</p>;
-  if (!isAdmin) return null;
+  }
 
-  return <>{children}</>;
+  if (user && (isAdmin || isOwner)) {
+    return <>{children}</>;
+  }
+
+  return null;
 }

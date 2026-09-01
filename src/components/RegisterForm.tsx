@@ -38,6 +38,7 @@ export default function RegisterForm() {
     defaultValues: {
       username: "",
       email: "",
+      phoneNumber: "",
       password: "",
     },
 
@@ -61,7 +62,7 @@ export default function RegisterForm() {
         // 2. Get Cloudinary URL
         const avatarUrl = uploadResponse.data.url;
 
-        // 3. Register user with avatarUrl
+        // 3. Register user
         mutate({
           ...value,
           avatarUrl,
@@ -81,7 +82,6 @@ export default function RegisterForm() {
       return;
     }
 
-    // Extra frontend validation
     if (!file.type.startsWith("image/")) {
       setUploadError("Please choose an image file.");
       return;
@@ -95,7 +95,6 @@ export default function RegisterForm() {
     setUploadError(null);
     setProfilePicture(file);
 
-    // Create preview
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
   }
@@ -118,7 +117,7 @@ export default function RegisterForm() {
               alt="Profile preview"
               width={96}
               height={96}
-              className="h-24 w-24 rounded-full object-cover border border-beige"
+              className="h-24 w-24 rounded-full border border-beige object-cover"
             />
           ) : (
             <div className="flex h-24 w-24 items-center justify-center rounded-full border border-dashed border-gold bg-cream text-center text-xs text-gray">
@@ -202,6 +201,36 @@ export default function RegisterForm() {
                 {field.state.meta.errors.join(", ")}
               </p>
             )}
+          </div>
+        )}
+      </form.Field>
+
+      {/* Phone Number */}
+      <form.Field name="phoneNumber">
+        {(field) => (
+          <div>
+            <label htmlFor="phoneNumber" className="text-sm text-black">
+              Phone Number
+            </label>
+
+            <input
+              id="phoneNumber"
+              type="tel"
+              required
+              placeholder="0555 12 34 56"
+              value={field.state.value}
+              onChange={(e) => field.handleChange(e.target.value)}
+              onBlur={field.handleBlur}
+              className="mt-2 w-full rounded-md border border-black bg-cream px-4 py-2 text-gray outline-none focus:border-black"
+            />
+
+            {field.state.meta.errors.length > 0 && (
+              <p className="mt-1 text-xs text-gold-dark">
+                {field.state.meta.errors.join(", ")}
+              </p>
+            )}
+
+            <p className="mt-1 text-xs text-gray">Example: 0555 12 34 56</p>
           </div>
         )}
       </form.Field>

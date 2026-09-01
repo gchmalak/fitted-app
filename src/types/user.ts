@@ -4,6 +4,7 @@
     _id:string;
     email:string;
     username:string;
+    phoneNumber:string;
     role:UserRole;
     bio?:string;
     avatarUrl:string;

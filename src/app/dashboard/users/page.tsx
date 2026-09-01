@@ -12,15 +12,25 @@ import {
 import { ApiResponse } from "@/types/api";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 type RoleFilter = "all" | "admin" | "user";
 
 export default function AdminUsersPage() {
   const { isOwner } = useAuth();
+  const router = useRouter();
+
   const [page, setPage] = useState(1);
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
   const [search, setSearch] = useState("");
+
   const queryClient = useQueryClient();
+
+  // Only the owner can access the Users page
+  if (!isOwner) {
+    router.replace("/dashboard");
+    return null;
+  }
 
   const { data, isLoading } = useQuery({
     queryKey: ["users", page, roleFilter, search],
@@ -36,17 +46,26 @@ export default function AdminUsersPage() {
   const roleMutation = useMutation({
     mutationFn: ({ id, role }: { id: string; role: "admin" | "user" }) =>
       updateUserRole(id, role),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 
   const deactivateMutation = useMutation<ApiResponse<User>, Error, string>({
     mutationFn: deactivateUser,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 
   const reactivateMutation = useMutation<ApiResponse<User>, Error, string>({
     mutationFn: reactivateUser,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 
   const users = data?.data || [];
@@ -59,7 +78,7 @@ export default function AdminUsersPage() {
 
   return (
     <div className="p-6 md:p-10">
-      {/* Bread crumbs */}
+      {/* Breadcrumbs */}
       <BreadCrumbs
         items={[
           {
@@ -67,10 +86,12 @@ export default function AdminUsersPage() {
           },
         ]}
       />
-      {/* heading */}
+
+      {/* Heading */}
       <h1 className="mb-6 font-serif text-3xl text-black">Users</h1>
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Role filters */}
         <div className="flex gap-2">
           {TABS.map((tab) => (
             <button
@@ -89,7 +110,8 @@ export default function AdminUsersPage() {
             </button>
           ))}
         </div>
-        {/* Search bar */}
+
+        {/* Search */}
         <input
           type="text"
           value={search}
@@ -101,11 +123,11 @@ export default function AdminUsersPage() {
           className="w-full rounded-md border border-beige bg-white px-4 py-2 text-sm text-black outline-none focus:border-gold sm:w-72"
         />
       </div>
-      {/* is loading message */}
+
+      {/* Loading */}
       {isLoading ? (
         <p className="p-10 text-gray">Loading users...</p>
       ) : users.length === 0 ? (
-        // users not found message
         <p className="rounded-xl border border-beige bg-white py-16 text-center text-gray">
           {search ? `No users match "${search}".` : "No users found."}
         </p>
@@ -118,10 +140,13 @@ export default function AdminUsersPage() {
             >
               <div>
                 <p className="font-medium text-black">{user.username}</p>
+
                 <p className="text-sm text-gray">{user.email}</p>
+
                 <span className="mt-1 inline-block rounded bg-beige px-2 py-0.5 text-xs text-gold-dark">
                   {user.role}
                 </span>
+
                 {!user.isActive && (
                   <span className="ml-2 inline-block rounded bg-red-100 px-2 py-0.5 text-xs text-red-600">
                     Deactivated
@@ -130,48 +155,47 @@ export default function AdminUsersPage() {
               </div>
 
               <div className="flex items-center gap-2">
-                {isOwner && (
+                {/* Promote / Demote */}
+                <button
+                  onClick={() =>
+                    roleMutation.mutate({
+                      id: user._id,
+                      role: user.role === "admin" ? "user" : "admin",
+                    })
+                  }
+                  disabled={roleMutation.isPending}
+                  className="rounded-md bg-gold px-3 py-1.5 text-xs font-medium text-white hover:bg-gold-dark disabled:opacity-50"
+                >
+                  {user.role === "admin"
+                    ? "Demote to User"
+                    : "Promote to Admin"}
+                </button>
+
+                {/* Deactivate / Reactivate */}
+                {user.isActive ? (
                   <button
-                    onClick={() =>
-                      roleMutation.mutate({
-                        id: user._id,
-                        role: user.role === "admin" ? "user" : "admin",
-                      })
-                    }
-                    disabled={roleMutation.isPending}
-                    className="rounded-md bg-gold px-3 py-1.5 text-xs font-medium text-white hover:bg-gold-dark disabled:opacity-50"
+                    onClick={() => deactivateMutation.mutate(user._id)}
+                    disabled={deactivateMutation.isPending}
+                    className="rounded-md border border-red-400 px-3 py-1.5 text-xs text-red-500 hover:bg-red-50 disabled:opacity-50"
                   >
-                    {user.role === "admin"
-                      ? "Demote to User"
-                      : "Promote to Admin"}
+                    Deactivate
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => reactivateMutation.mutate(user._id)}
+                    disabled={reactivateMutation.isPending}
+                    className="rounded-md border border-green-500 px-3 py-1.5 text-xs text-green-600 hover:bg-green-50 disabled:opacity-50"
+                  >
+                    Reactivate
                   </button>
                 )}
-                {isOwner &&
-                  (user.isActive ? (
-                    // deactivate button
-                    <button
-                      onClick={() => deactivateMutation.mutate(user._id)}
-                      disabled={deactivateMutation.isPending}
-                      className="rounded-md border border-red-400 px-3 py-1.5 text-xs text-red-500 hover:bg-red-50 disabled:opacity-50"
-                    >
-                      Deactivate
-                    </button>
-                  ) : (
-                    // reactivate button
-                    <button
-                      onClick={() => reactivateMutation.mutate(user._id)}
-                      disabled={reactivateMutation.isPending}
-                      className="rounded-md border border-green-500 px-3 py-1.5 text-xs text-green-600 hover:bg-green-50 disabled:opacity-50"
-                    >
-                      Reactivate
-                    </button>
-                  ))}
               </div>
             </div>
           ))}
         </div>
       )}
-      {/* pagination:hide the limit unless there are more than 20 users in that case admin can scroll pages of users */}
+
+      {/* Pagination */}
       {data && data.totalPages > 1 && (
         <div className="mt-6 flex items-center gap-3">
           <button
@@ -181,9 +205,11 @@ export default function AdminUsersPage() {
           >
             Previous
           </button>
+
           <span className="text-xs text-gray">
             Page {data.currentPage} of {data.totalPages}
           </span>
+
           <button
             onClick={() => setPage((p) => p + 1)}
             disabled={page === data.totalPages}

@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const LINKS = [
   { label: "Dashboard", href: "/dashboard" },
-  { label: "Users", href: "/dashboard/users" },
+  { label: "Users", href: "/dashboard/users", ownerOnly: true },
   { label: "Products", href: "/dashboard/products" },
   { label: "Browse Products", href: "/dashboard/products/browse" },
   { label: "Editorial", href: "/dashboard/editorial" },
@@ -37,6 +37,11 @@ export default function AdminSidebar() {
 
       <div className="flex flex-1 flex-col gap-1">
         {LINKS.map((link) => {
+          // Only the owner can see the Users page
+          if (link.ownerOnly && !isOwner) {
+            return null;
+          }
+
           const isActive = pathname === link.href;
 
           return (

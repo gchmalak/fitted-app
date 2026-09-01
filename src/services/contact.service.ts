@@ -16,20 +16,20 @@ export interface ContactMessage extends ContactMessageRequest {
 }
 
 export async function sendContactMessage(data: ContactMessageRequest): Promise<ApiResponse<ContactMessage>> {
-  const response = await api.post<ApiResponse<ContactMessage>>("/api/contact", data);
+  const response = await api.post<ApiResponse<ContactMessage>>("/contact", data);
   return response.data;
 }
 
 export async function getAllContactMessages(): Promise<ApiResponse<ContactMessage[]>> {
-  const response = await api.get<ApiResponse<ContactMessage[]>>("/api/contact");
+  const response = await api.get<ApiResponse<ContactMessage[]>>("/contact");
   return response.data;
 }
 
 export async function markContactMessageRead(id: string): Promise<ApiResponse<ContactMessage>> {
-  const response = await api.put<ApiResponse<ContactMessage>>(`/api/contact/${id}/read`);
+  const response = await api.put<ApiResponse<ContactMessage>>(`/contact/${id}/read`);
   return response.data;
 }
 export async function replyToMessage(id: string, reply: string): Promise<ApiResponse<ContactMessage>> {
-  const response = await api.post<ApiResponse<ContactMessage>>(`/api/contact/${id}/reply`, { reply });
+  const response = await api.post<ApiResponse<ContactMessage>>(`/contact/${id}/reply`, { reply });
   return response.data;
 }

@@ -3,12 +3,12 @@ import { ApiResponse, PaginatedResponse } from "@/types/api";
 import { CreateOrderRequest, Order, OrderStatus } from "@/types/order";
 
 export async function createOrder(data: CreateOrderRequest): Promise<ApiResponse<Order>> {
-  const response = await api.post<ApiResponse<Order>>("/api/orders", data);
+  const response = await api.post<ApiResponse<Order>>("/orders", data);
   return response.data;
 }
 
 export async function getMyOrders(): Promise<ApiResponse<Order[]>> {
-  const response = await api.get<ApiResponse<Order[]>>("/api/orders");
+  const response = await api.get<ApiResponse<Order[]>>("/orders");
   return response.data;
 }
 
@@ -21,7 +21,7 @@ export async function getAllOrders(params?: {
   productName?: string;
 }): Promise<PaginatedResponse<Order[]>> {
   const response = await api.get<PaginatedResponse<Order[]>>(
-    "/api/orders/all",
+    "/orders/all",
     { params },
   );
 
@@ -29,11 +29,11 @@ export async function getAllOrders(params?: {
 }
 
 export async function getOrder(id: string): Promise<ApiResponse<Order>> {
-  const response = await api.get<ApiResponse<Order>>(`/api/orders/${id}`);
+  const response = await api.get<ApiResponse<Order>>(`/orders/${id}`);
   return response.data;
 }
 
 export async function updateOrderStatus(id: string, status: OrderStatus): Promise<ApiResponse<Order>> {
-  const response = await api.put<ApiResponse<Order>>(`/api/orders/${id}`, { status });
+  const response = await api.put<ApiResponse<Order>>(`/orders/${id}`, { status });
   return response.data;
 }

@@ -13,6 +13,6 @@ export interface DashboardStats {
   totalRevenue: number;
 }
 export async function getDashboardStats():Promise<ApiResponse<DashboardStats>>{
-    const response = await api.get<ApiResponse<DashboardStats>>("/api/dashboard/stats")
+    const response = await api.get<ApiResponse<DashboardStats>>("/dashboard/stats")
     return response.data
 }

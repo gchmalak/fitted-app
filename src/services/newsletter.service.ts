@@ -13,18 +13,18 @@ export interface BroadcastResult {
 }
 
 export async function subscribeToNewsletter(email: string): Promise<ApiResponse<NewsletterSubscriber>> {
-  const response = await api.post<ApiResponse<NewsletterSubscriber>>("/api/newsletter/subscribe", { email });
+  const response = await api.post<ApiResponse<NewsletterSubscriber>>("/newsletter/subscribe", { email });
   return response.data;
 }
 
 export async function sendBroadcast(subject: string, message: string): Promise<ApiResponse<BroadcastResult>> {
-  const response = await api.post<ApiResponse<BroadcastResult>>("/api/newsletter/broadcast", {
+  const response = await api.post<ApiResponse<BroadcastResult>>("/newsletter/broadcast", {
     subject,
     message,
   });
   return response.data;
 }
 export async function getAllSubscribers(): Promise<ApiResponse<NewsletterSubscriber[]>> {
-  const response = await api.get<ApiResponse<NewsletterSubscriber[]>>("/api/newsletter");
+  const response = await api.get<ApiResponse<NewsletterSubscriber[]>>("/newsletter");
   return response.data;
 }

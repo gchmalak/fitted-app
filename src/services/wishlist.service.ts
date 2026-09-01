@@ -9,7 +9,7 @@ export interface WishlistResponse {
 
 // Get the logged-in user's wishlist
 export async function getWishlist(): Promise<WishlistResponse> {
-  const response = await api.get<WishlistResponse>("/api/wishlist");
+  const response = await api.get<WishlistResponse>("/wishlist");
 
   return response.data;
 }
@@ -19,7 +19,7 @@ export async function addToWishlist(
   productId: string,
 ): Promise<WishlistResponse> {
   const response = await api.post<WishlistResponse>(
-    `/api/wishlist/${productId}`,
+    `/wishlist/${productId}`,
   );
 
   return response.data;
@@ -30,7 +30,7 @@ export async function removeFromWishlist(
   productId: string,
 ): Promise<WishlistResponse> {
   const response = await api.delete<WishlistResponse>(
-    `/api/wishlist/${productId}`,
+    `/wishlist/${productId}`,
   );
 
   return response.data;

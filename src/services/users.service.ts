@@ -3,22 +3,22 @@ import { ApiResponse, PaginatedResponse } from "@/types/api";
 import { User } from "@/types/user";
 
 export async function getAllUsers(params?: { page?: number; limit?: number, role?:"admin" |"user",search?:string }): Promise<PaginatedResponse<User[]>> {
-  const response = await api.get<PaginatedResponse<User[]>>("/api/users", { params });
+  const response = await api.get<PaginatedResponse<User[]>>("/users", { params });
   return response.data;
 }
 
 export async function updateUserRole(id: string, role: "admin" | "user"): Promise<ApiResponse<User>> {
-  const response = await api.put<ApiResponse<User>>(`/api/users/${id}/role`, { role });
+  const response = await api.put<ApiResponse<User>>(`/users/${id}/role`, { role });
   return response.data;
 }
 
 export async function deactivateUser(id: string): Promise<ApiResponse<User>> {
-  const response = await api.put<ApiResponse<User>>(`/api/users/${id}/deactivate`);
+  const response = await api.put<ApiResponse<User>>(`/users/${id}/deactivate`);
   return response.data;
 }
 
 export async function reactivateUser(id: string): Promise<ApiResponse<User>> {
-  const response = await api.put<ApiResponse<User>>(`/api/users/${id}/reactivate`);
+  const response = await api.put<ApiResponse<User>>(`/users/${id}/reactivate`);
   return response.data;
 }
 export async function updateProfilePicture(
@@ -29,7 +29,7 @@ export async function updateProfilePicture(
   formData.append("avatar", file);
 
   const response = await api.put<ApiResponse<User>>(
-    "/api/users/profile-picture",
+    "/users/profile-picture",
     formData,
   );
 

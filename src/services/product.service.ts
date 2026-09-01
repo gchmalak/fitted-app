@@ -14,7 +14,7 @@ export async function getProducts(
   };
 
   const response = await api.get<PaginatedResponse<Product[]>>(
-    "/api/products",
+    "/products",
     { params: queryParams },
   );
 
@@ -26,25 +26,25 @@ export async function getLatestProducts(): Promise<PaginatedResponse<Product[]>>
 }
 
 export async function getProduct(id: string): Promise<ApiResponse<Product>> {
-  const response = await api.get<ApiResponse<Product>>(`/api/products/${id}`);
+  const response = await api.get<ApiResponse<Product>>(`/products/${id}`);
   return response.data;
 }
 
 export async function createProduct(data: CreateProductRequest): Promise<ApiResponse<Product>> {
-  const response = await api.post<ApiResponse<Product>>("/api/products", data);
+  const response = await api.post<ApiResponse<Product>>("/products", data);
   return response.data;
 }
 
 export async function updateProduct(id: string, data: UpdateProductRequest): Promise<ApiResponse<Product>> {
-  const response = await api.put<ApiResponse<Product>>(`/api/products/${id}`, data);
+  const response = await api.put<ApiResponse<Product>>(`/products/${id}`, data);
   return response.data;
 }
 
 export async function deleteProduct(id: string): Promise<void> {
-  await api.delete(`/api/products/${id}`);
+  await api.delete(`/products/${id}`);
 }
 export async function getFilters(): Promise<ApiResponse<FiltersResponse>> {
-  const response = await api.get<ApiResponse<FiltersResponse>>("/api/products/filters");
+  const response = await api.get<ApiResponse<FiltersResponse>>("/products/filters");
   return response.data;
 }
 

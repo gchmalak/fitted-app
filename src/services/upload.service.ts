@@ -10,7 +10,7 @@ export async function uploadImage(file:File):Promise<ApiResponse<UploadResponse>
     const formData = new FormData()
     formData.append("image", file)
 
-    const response = await api.post<ApiResponse<UploadResponse>>("/api/upload", formData)
+    const response = await api.post<ApiResponse<UploadResponse>>("/upload", formData)
      return response.data     
     }
 

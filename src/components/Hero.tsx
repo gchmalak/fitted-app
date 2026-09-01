@@ -60,7 +60,7 @@ export default function Hero() {
   const { data: slides, isLoading } = useQuery<CarouselSlideDTO[]>({
     queryKey: ["carousel", "public"],
     queryFn: async () => {
-      const { data } = await api.get("/api/carousel/public");
+      const { data } = await api.get("/carousel/public");
       return data.data;
     },
     staleTime: 1000 * 60 * 10, //cache for 10 minutes

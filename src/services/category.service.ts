@@ -7,7 +7,7 @@ import {
 } from "@/types/category";
 
 export async function getCategories(): Promise<ApiResponse<Category[]>> {
-  const response = await api.get<ApiResponse<Category[]>>("/api/categories");
+  const response = await api.get<ApiResponse<Category[]>>("/categories");
   return response.data;
 }
 
@@ -15,7 +15,7 @@ export async function createCategory(
   data: CreateCategoryRequest,
 ): Promise<ApiResponse<Category>> {
   const response = await api.post<ApiResponse<Category>>(
-    "/api/categories",
+    "/categories",
     data,
   );
   return response.data;
@@ -26,14 +26,14 @@ export async function updateCategory(
   data: UpdateCategoryRequest,
 ): Promise<ApiResponse<Category>> {
   const response = await api.put<ApiResponse<Category>>(
-    `/api/categories/${id}`,
+    `/categories/${id}`,
     data,
   );
   return response.data;
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-  await api.delete(`/api/categories/${id}`);
+  await api.delete(`/categories/${id}`);
 }
 
 // Adds one subcategory to an existing category by sending the full

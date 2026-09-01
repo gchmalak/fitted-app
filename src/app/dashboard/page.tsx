@@ -3,6 +3,7 @@
 import { getDashboardStats } from "@/services/dashboard.service";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import BreadCrumbs from "@/components/BreadCrumbs";
 
 export default function AdminDashboardPage() {
   const { isOwner } = useAuth();
@@ -11,9 +12,13 @@ export default function AdminDashboardPage() {
     queryKey: ["dashboard", "stats"],
     queryFn: getDashboardStats,
   });
-  if (isLoading) return <p className="p-10 text-gray">Loading dashboard...</p>;
+
+  if (isLoading) {
+    return <p className="p-10 text-gray">Loading dashboard...</p>;
+  }
 
   const stats = data?.data;
+
   if (!stats) return null;
 
   const cards = [
@@ -30,16 +35,25 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="p-6 md:p-10">
+      {/* Dashboard → Website */}
+      <BreadCrumbs
+        baseHref="/"
+        baseLabel="Home"
+        items={[{ label: "Dashboard" }]}
+      />
+
       <h1 className="mb-8 font-serif text-3xl text-black">Dashboard</h1>
+
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {cards.map((card) => (
           <div
             key={card.label}
             className="rounded-xl border border-beige bg-white p-5"
           >
-            <p className="text-xs uppercase tracking-wide text-gray ">
+            <p className="text-xs uppercase tracking-wide text-gray">
               {card.label}
             </p>
+
             <p className="mt-2 font-serif text-3xl text-gold-dark">
               {card.value}
             </p>

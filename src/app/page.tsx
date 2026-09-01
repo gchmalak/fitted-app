@@ -12,7 +12,7 @@ export default function Home() {
     <main>
       <Navbar />
       <Hero />
-      <AboutSection />
+
       <ProductCarouselSection
         id="clothing"
         title="Latest Arrivals"
@@ -37,6 +37,7 @@ export default function Home() {
         limit={12}
         shopLabel="Shop Accessories"
       />
+      <AboutSection />
     </main>
   );
 }

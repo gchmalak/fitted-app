@@ -25,13 +25,8 @@ export default function LoginForm() {
       // Save user in Redux
       dispatch(setUser(data.data));
 
-      const role = data.data.role;
-
-      if (role === "owner" || role === "admin") {
-        router.push("/dashboard");
-      } else {
-        router.push("/");
-      }
+      // Everyone goes to the main website after logging in
+      router.push("/");
     },
   });
 

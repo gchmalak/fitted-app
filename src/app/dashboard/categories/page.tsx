@@ -57,8 +57,7 @@ export default function AdminCategoriesPage() {
 
   // Pagination calculations
   const totalCount = categories.length;
-
-  const totalPages = Math.ceil(totalCount / CATEGORIES_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(totalCount / CATEGORIES_PER_PAGE));
 
   const startIndex = (page - 1) * CATEGORIES_PER_PAGE;
 
@@ -69,11 +68,6 @@ export default function AdminCategoriesPage() {
 
   // Keep page valid after deleting categories
   useEffect(() => {
-    if (totalPages === 0) {
-      setPage(1);
-      return;
-    }
-
     if (page > totalPages) {
       setPage(totalPages);
     }
@@ -90,6 +84,7 @@ export default function AdminCategoriesPage() {
 
       setName("");
       setDepartment("");
+      setCreateErrors({});
 
       // Go back to first page after creating
       setPage(1);
@@ -367,16 +362,14 @@ export default function AdminCategoriesPage() {
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              totalCount={totalCount}
-              limit={CATEGORIES_PER_PAGE}
-              onPageChange={setPage}
-            />
-          )}
+          {/* Pagination - ALWAYS VISIBLE */}
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalCount={totalCount}
+            limit={CATEGORIES_PER_PAGE}
+            onPageChange={setPage}
+          />
         </>
       )}
     </div>

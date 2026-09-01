@@ -27,7 +27,7 @@ export default function AdminMessagesPage() {
 
   const messages = data?.data ?? [];
 
-  // Automatically select the first message
+  // Automatically select the first conversation
   useEffect(() => {
     if (messages.length > 0 && !selectedMessageId) {
       setSelectedMessageId(messages[0]._id);
@@ -50,7 +50,7 @@ export default function AdminMessagesPage() {
     },
   });
 
-  // Reply
+  // Send reply
   const replyMutation = useMutation({
     mutationFn: ({ id, reply }: { id: string; reply: string }) =>
       replyToMessage(id, reply),
@@ -74,7 +74,6 @@ export default function AdminMessagesPage() {
       readMutation.mutate(id);
     }
 
-    // Clear reply box when switching conversations
     setReplyText("");
   };
 
@@ -123,9 +122,9 @@ export default function AdminMessagesPage() {
         </div>
       ) : (
         <div className="grid min-h-[650px] overflow-hidden rounded-2xl border border-beige bg-white shadow-sm lg:grid-cols-[300px_1fr]">
-          {/* ================================================================= */}
+          {/* ============================================================= */}
           {/* CONVERSATIONS SIDEBAR */}
-          {/* ================================================================= */}
+          {/* ============================================================= */}
 
           <div className="border-b border-beige lg:border-r lg:border-b-0">
             {/* Sidebar header */}
@@ -143,6 +142,9 @@ export default function AdminMessagesPage() {
             <div className="max-h-[250px] overflow-y-auto lg:max-h-[600px]">
               {messages.map((msg) => {
                 const isSelected = msg._id === selectedMessageId;
+
+                // Last message in the conversation
+                const lastMessage = msg.messages?.[msg.messages.length - 1];
 
                 return (
                   <button
@@ -181,11 +183,15 @@ export default function AdminMessagesPage() {
                         </p>
 
                         <p className="mt-1 truncate text-xs text-gray">
-                          {msg.message}
+                          {lastMessage?.message ?? ""}
                         </p>
 
                         <p className="mt-1 text-[10px] text-gray">
-                          {new Date(msg.createdAt).toLocaleDateString()}
+                          {lastMessage
+                            ? new Date(
+                                lastMessage.createdAt,
+                              ).toLocaleDateString()
+                            : new Date(msg.createdAt).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -195,9 +201,9 @@ export default function AdminMessagesPage() {
             </div>
           </div>
 
-          {/* ================================================================= */}
+          {/* ============================================================= */}
           {/* CHAT */}
-          {/* ================================================================= */}
+          {/* ============================================================= */}
 
           <div className="flex min-h-[600px] flex-col">
             {selectedMessage ? (
@@ -248,47 +254,58 @@ export default function AdminMessagesPage() {
                     </span>
                   </div>
 
-                  {/* User message */}
-                  <div className="flex justify-start">
-                    <div className="max-w-[80%] md:max-w-[65%]">
-                      <div className="rounded-2xl rounded-tl-sm border border-beige bg-white px-4 py-3 shadow-sm">
-                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-black">
-                          {selectedMessage.message}
-                        </p>
-                      </div>
+                  {/* Conversation messages */}
+                  {selectedMessage.messages?.map((chatMessage, index) => {
+                    const isAdmin = chatMessage.sender === "admin";
 
-                      <p className="mt-1 px-1 text-[10px] text-gray">
-                        {new Date(selectedMessage.createdAt).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
+                    return (
+                      <div
+                        key={`${chatMessage.createdAt}-${index}`}
+                        className={`flex ${
+                          isAdmin ? "justify-end" : "justify-start"
+                        }`}
+                      >
+                        <div className="max-w-[80%] md:max-w-[65%]">
+                          <div
+                            className={`rounded-2xl px-4 py-3 shadow-sm ${
+                              isAdmin
+                                ? "rounded-tr-sm bg-gold"
+                                : "rounded-tl-sm border border-beige bg-white"
+                            }`}
+                          >
+                            {isAdmin && (
+                              <p className="mb-1 text-[10px] font-medium uppercase tracking-wide text-white/70">
+                                You
+                              </p>
+                            )}
 
-                  {/* Admin reply */}
-                  {selectedMessage.reply && (
-                    <div className="flex justify-end">
-                      <div className="max-w-[80%] md:max-w-[65%]">
-                        <div className="rounded-2xl rounded-tr-sm bg-gold px-4 py-3 shadow-sm">
-                          <p className="mb-1 text-[10px] font-medium uppercase tracking-wide text-white/70">
-                            You
-                          </p>
+                            <p
+                              className={`whitespace-pre-wrap text-sm leading-relaxed ${
+                                isAdmin ? "text-white" : "text-black"
+                              }`}
+                            >
+                              {chatMessage.message}
+                            </p>
+                          </div>
 
-                          <p className="whitespace-pre-wrap text-sm leading-relaxed text-white">
-                            {selectedMessage.reply}
+                          <p
+                            className={`mt-1 px-1 text-[10px] text-gray ${
+                              isAdmin ? "text-right" : "text-left"
+                            }`}
+                          >
+                            {new Date(chatMessage.createdAt).toLocaleString()}
                           </p>
                         </div>
-
-                        <p className="mt-1 px-1 text-right text-[10px] text-gray">
-                          Reply sent
-                        </p>
                       </div>
-                    </div>
-                  )}
+                    );
+                  })}
 
-                  {/* Empty space if no reply */}
-                  {!selectedMessage.reply && (
+                  {/* Empty conversation */}
+                  {(!selectedMessage.messages ||
+                    selectedMessage.messages.length === 0) && (
                     <div className="mt-auto text-center">
                       <p className="text-xs text-gray">
-                        Reply to this message below.
+                        No messages in this conversation yet.
                       </p>
                     </div>
                   )}

@@ -10,7 +10,6 @@ import ProductCarouselSection from "@/components/ProductCarouselSection";
 export default function Home() {
   return (
     <main>
-      <Navbar />
       <Hero />
 
       <ProductCarouselSection

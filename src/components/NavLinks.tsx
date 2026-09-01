@@ -5,9 +5,9 @@ import Link from "next/link";
 const SECTIONS = [
   { label: "Home", href: "/" },
   { label: "Shop All", href: "/products" },
-  { label: "Clothing", href: "/#clothing" },
-  { label: "Care Essentials", href: "/#care-essentials" },
-  { label: "Accessories", href: "/#accessories" },
+  { label: "Clothing", href: "/clothing" },
+  { label: "Care Essentials", href: "/care-essentials" },
+  { label: "Accessories", href: "/accessories" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];

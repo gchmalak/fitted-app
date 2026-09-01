@@ -1,57 +1,61 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useNavTheme() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
-  const visibilityMap = useRef(new Map<Element, boolean>());
-  const observerRef = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          visibilityMap.current.set(entry.target, entry.isIntersecting);
-        });
+    function updateTheme() {
+      const sections = Array.from(
+        document.querySelectorAll<HTMLElement>("[data-navtheme]"),
+      );
 
-        // scan in current DOM order for the first still-visible section
-        const allSections = Array.from(document.querySelectorAll("[data-navtheme]"));
-        const topmostVisible = allSections.find((el) => visibilityMap.current.get(el));
+      if (sections.length === 0) {
+        setTheme("dark");
+        return;
+      }
 
-        if (topmostVisible) {
-          const value = topmostVisible.getAttribute("data-navtheme");
-          setTheme(value === "light" ? "light" : "dark");
-        }
-      },
-      {
-        rootMargin: "-80px 0px -85% 0px",
-        threshold: 0,
-      },
-    );
-    observerRef.current = observer;
+      // The navbar is around 80px tall.
+      // Check which themed section is underneath it.
+      const navbarHeight = 80;
 
-    // observe whatever sections already exist
-    const initialSections = document.querySelectorAll("[data-navtheme]");
-    initialSections.forEach((el) => {
-      visibilityMap.current.set(el, false);
-      observer.observe(el);
-    });
+      const visibleSection = sections.find((section) => {
+        const rect = section.getBoundingClientRect();
 
-    // watch for sections that mount later (e.g. after data loads)
-    const mutationObserver = new MutationObserver(() => {
-      const currentSections = document.querySelectorAll("[data-navtheme]");
-      currentSections.forEach((el) => {
-        if (!visibilityMap.current.has(el)) {
-          visibilityMap.current.set(el, false);
-          observer.observe(el);
-        }
+        return rect.top <= navbarHeight && rect.bottom > navbarHeight;
       });
+
+      if (visibleSection) {
+        const sectionTheme = visibleSection.dataset.navtheme;
+
+        setTheme(sectionTheme === "light" ? "light" : "dark");
+      }
+    }
+
+    // Initial check
+    updateTheme();
+
+    // Update when scrolling between sections
+    window.addEventListener("scroll", updateTheme, { passive: true });
+
+    // Update when the carousel changes data-navtheme
+    const mutationObserver = new MutationObserver(() => {
+      updateTheme();
     });
 
-    mutationObserver.observe(document.body, { childList: true, subtree: true });
+    mutationObserver.observe(document.body, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["data-navtheme"],
+    });
+
+    // Update after layout changes
+    window.addEventListener("resize", updateTheme);
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener("scroll", updateTheme);
+      window.removeEventListener("resize", updateTheme);
       mutationObserver.disconnect();
     };
   }, []);

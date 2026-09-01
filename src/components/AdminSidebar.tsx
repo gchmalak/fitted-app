@@ -10,7 +10,6 @@ const LINKS = [
   { label: "Dashboard", href: "/dashboard" },
   { label: "Users", href: "/dashboard/users", ownerOnly: true },
   { label: "Products", href: "/dashboard/products" },
-  { label: "Browse Products", href: "/dashboard/products/browse" },
   { label: "Editorial", href: "/dashboard/editorial" },
   { label: "Categories", href: "/dashboard/categories" },
   { label: "Carousel", href: "/dashboard/carousel" },

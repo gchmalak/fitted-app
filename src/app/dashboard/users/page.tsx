@@ -238,8 +238,8 @@ export default function AdminUsersPage() {
             ))}
           </div>
 
-          {/* Pagination */}
-          {data && data.totalPages > 1 && (
+          {/* Pagination - always visible when users exist */}
+          {data && users.length > 0 && (
             <Pagination
               currentPage={data.currentPage}
               totalPages={data.totalPages}

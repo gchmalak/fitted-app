@@ -25,19 +25,12 @@ export default function Navbar() {
 
   const pathname = usePathname();
   const router = useRouter();
-
   const navTheme = useNavTheme();
 
   const currentUser = useSelector((state: RootState) => state.auth.user);
-
   const dispatch = useDispatch<AppDispatch>();
 
   const accountMenuRef = useRef<HTMLDivElement>(null);
-
-  // Hide Navbar completely on dashboard routes
-  if (pathname.startsWith("/dashboard")) {
-    return null;
-  }
 
   const isHomePage = pathname === "/";
 
@@ -70,6 +63,12 @@ export default function Navbar() {
     };
   }, []);
 
+  // Close menus when navigating
+  useEffect(() => {
+    setAccountMenuOpen(false);
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
   function handleLogout() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -79,6 +78,17 @@ export default function Navbar() {
     setAccountMenuOpen(false);
 
     router.push("/");
+  }
+
+  // Hide navbar on authentication pages
+  const isAuthPage =
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/reset-password";
+
+  // Hide navbar completely on dashboard routes and auth pages
+  if (pathname.startsWith("/dashboard") || isAuthPage) {
+    return null;
   }
 
   return (
@@ -135,9 +145,10 @@ export default function Navbar() {
                   />
                 </button>
 
-                {/* Dropdown */}
+                {/* Account dropdown */}
                 {accountMenuOpen && (
                   <div className="absolute right-0 mt-3 w-48 rounded-xl border border-beige bg-white p-2 shadow-lg">
+                    {/* My Account */}
                     <Link
                       href="/account"
                       onClick={() => setAccountMenuOpen(false)}
@@ -146,6 +157,7 @@ export default function Navbar() {
                       My Account
                     </Link>
 
+                    {/* My Orders */}
                     <Link
                       href="/orders"
                       onClick={() => setAccountMenuOpen(false)}
@@ -154,7 +166,7 @@ export default function Navbar() {
                       My Orders
                     </Link>
 
-                    {/* Dashboard only for admin / owner */}
+                    {/* Dashboard - Admin/Owner only */}
                     {isAdmin && (
                       <Link
                         href="/dashboard"
@@ -167,6 +179,7 @@ export default function Navbar() {
 
                     <div className="my-1 border-t border-beige" />
 
+                    {/* Logout */}
                     <button
                       type="button"
                       onClick={handleLogout}

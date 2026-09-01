@@ -9,17 +9,27 @@ export default function AuthInitializer() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
 
-    if (!storedUser) {
+    if (!token || !storedUser) {
+      dispatch(setUser(null));
       return;
     }
 
     try {
       const user = JSON.parse(storedUser);
-      dispatch(setUser(user));
-    } catch {
+
+      if (user && typeof user === "object") {
+        dispatch(setUser(user));
+      } else {
+        localStorage.removeItem("user");
+        dispatch(setUser(null));
+      }
+    } catch (error) {
+      console.error("Could not restore user:", error);
       localStorage.removeItem("user");
+      dispatch(setUser(null));
     }
   }, [dispatch]);
 
